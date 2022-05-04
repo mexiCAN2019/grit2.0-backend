@@ -35,7 +35,6 @@ app.get(`/years`, (req, res, next) => {
 
 app.post('/years', (req,res,next) => { /* Can i add more than one year at a time? For right now, this will only be for adding one at a time */
     const newYear = req.body.year;
-    console.log(newYear);
     if(!newYear){
         res.sendStatus(400);
     } else{
@@ -95,7 +94,7 @@ app.get('/years/:year', (req,res,next) => {
         if(err){
             next(err);
         } else{
-            res.status(200).json({months: rows});
+            res.status(201).json({months: rows});
         }
     });
 });
@@ -122,13 +121,13 @@ app.get('/years/:year', (req,res,next) => {
 
 app.post('/years/:year', (req,res,next) => {
     db.query(`INSERT INTO months SET ?;`, {
-        month: req.query.month,
-        yearID: req.params.year
+        month: req.body.month,
+        year: req.params.year
     }, (err, row) => {
         if(err) {
             next(err);
         } else{
-            res.status(201).json({month: req.query.month});
+            res.sendStatus(201);
         }
     })
 })
@@ -152,7 +151,8 @@ app.post('/years/:year', (req,res,next) => {
 // });
 
 app.delete(`/years/:year`, (req,res,next) => {
-    db.query(`DELETE FROM months WHERE id = ${req.query.monthId};`, (err) => {
+    console.log(req.body.monthID)
+    db.query(`DELETE FROM months WHERE id = ${req.body.monthID};`, (err) => {
         if(err){
             next(err);
         } else{
