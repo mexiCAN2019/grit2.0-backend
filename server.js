@@ -801,6 +801,117 @@ app.delete('/years/:year/month/checkbox', (req,res,next) => {
     })
 });
 
+//TEXTBOXES
+// subjectiveRouter.get('/', (req,res,next) => {
+//     db.all(`SELECT * FROM Subjective WHERE weekId = $id;`, {$id: req.query.weekId}, (err, rows) => {
+//         if(err) {
+//             next(err);
+//         } else{
+//             res.status(200).json({textboxes: rows});
+//         }
+//     });
+// });
+app.get('/years/:year/month/textboxes', (req,res,next) => {
+    db.query(`SELECT * FROM textbox WHERE weeks_id = ${req.query.weekID};`, (err, rows) => {
+        if(err){
+            next(err);
+        } else{
+            res.status(200).json({textboxes: rows});
+        }
+    })
+});
+// subjectiveRouter.post('/', (req,res,next) => {
+//     const newTextbox = req.body.textbox;
+//     if(!newTextbox.skillName){
+//         res.sendStatus(400);
+//     } else {
+//         db.run(`INSERT INTO Subjective (text, skillName, weekId)
+//             VALUES ($text, $skillName, $weekId);`, {
+//                 $text: newTextbox.text, 
+//                 $skillName: newTextbox.skillName,
+//                 $weekId: newTextbox.weekId
+//             }, function(err){
+//                 if(err) {
+//                     next(err);
+//                 } else{
+//                     db.get(`SELECT * FROM Subjective WHERE id = $id;`, {$id: this.lastID}, (err, row) => {
+//                         res.status(201).json({textbox: row});
+//                     });
+//                 }
+//             });
+//     }
+// });
+app.post('/years/:year/month/textbox', (req,res,next) => {
+    const newTextbox = req.body.textbox;
+    if(!newTextbox.skillName){
+        res.sendStatus(400);
+    } else{
+        db.query(`INSERT INTO textbox SET ?;`, {
+            skillName: newTextbox.skillName,
+            weeks_id: newTextbox.weekID,
+            months_id: newTextbox.monthID,
+            year: newTextbox.year,
+            text: newTextbox.text
+        }, err => {
+            if(err){
+                next(err);
+            } else{
+                res.sendStatus(200);
+            }
+        })
+    }
+});
+// subjectiveRouter.put('/', (req,res,next) => {
+//     const updatedTextbox = req.body.textbox;
+//     if(!updatedTextbox.skillName) {
+//         res.sendStatus(400);
+//     } else{
+//         db.run(`UPDATE Subjective SET 
+//             skillName = $skillName,
+//             text = $text
+//             WHERE id = $id;`, {
+//                 $skillName: updatedTextbox.skillName,
+//                 $text: updatedTextbox.text,
+//                 $id: updatedTextbox.id
+//             }, (err) => {
+//                 if(err){
+//                     next(err);
+//                 } else{
+//                     db.get(`SELECT * FROM Subjective WHERE id = $id;`, {$id: updatedTextbox.id}, (err, row) => {
+//                         res.status(200).json({textbox: row});
+//                     });
+//                 }
+//             });
+//     }
+// });
+app.put('/years/:year/month/textbox', (req,res,next) => {
+    const updatedTextbox = req.body.textbox;
+    if(!updatedTextbox.skillName){
+        res.sendStatus(400);
+    } else{
+        db.query(`UPDATE textbox SET ? WHERE id = ${updatedTextbox.id};`, {
+            skillName: updatedTextbox.skillName,
+            text: updatedTextbox.text,
+        }, err => {
+            if(err){
+                next(err);
+            } else{
+                res.sendStatus(200);
+            }
+        })
+    }
+});
+
+app.delete('/years/:year/month/textbox', (req,res,next) => {
+    db.query(`DELETE FROM textbox WHERE id = ${req.query.id};`, err => {
+        if(err) {
+            next(err);
+        } else{
+            res.sendStatus(200);
+        }
+    })
+});
+
 app.use(errorHandler());
 
 app.listen(PORT, () => {
