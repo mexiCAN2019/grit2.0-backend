@@ -644,6 +644,162 @@ app.delete('/years/:year/month/table', (req,res,next) => {
     })
 });
 
+//CHECKBOXES
+// app.get('/unbookedLoads/:year/:month', (req,res) => {
+//     db.query(`SELECT * FROM Loads WHERE booked = false AND delDate LIKE '${req.params.month}____${req.params.year}' 
+//     ORDER BY puDate DESC;`, (err, rows) => {
+//         if(err){
+//             throw err;
+//         } else {
+//             res.json({loads: rows});
+//         }
+//     });
+// });
+app.get('/years/:year/month/checkbox', (req,res,next) => {
+    db.query(`SELECT * FROM checkbox WHERE weeks_id = ${req.query.weekID};`, (err,rows) => {
+        if(err){
+            next(err);
+        } else{
+            res.status(200).json({checkboxes: rows});
+        }
+    })
+});
+// checkboxRouter.post('/', (req,res,next) => {
+//     const newCheckbox = req.body.checkbox
+//     if(!newCheckbox.skillName) {
+//         res.sendStatus(400);
+//     } else {
+//         db.run(`INSERT INTO Checkbox (skillName, monthId, yearFK, monday, tuesday, wednesday, thursday, friday, saturday, sunday, weekId)
+//         VALUES ($skillName, $monthId, $yearFK, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday, $weekId);`, {
+//             $skillName: newCheckbox.skillName,
+//             $monthId: newCheckbox.monthId,
+//             $yearFK: newCheckbox.yearFK,
+//             $monday: newCheckbox.monday,
+//             $tuesday: newCheckbox.tuesday,
+//             $wednesday: newCheckbox.wednesday,
+//             $thursday: newCheckbox.thursday,
+//             $friday: newCheckbox.friday,
+//             $saturday: newCheckbox.saturday,
+//             $sunday: newCheckbox.sunday,
+//             $weekId: newCheckbox.weekId
+//         }, function(err) {
+//             if(err) {
+//                 next(err);
+//             } else {
+//                 db.get(`SELECT * FROM Checkbox WHERE id = $id;`, {$id: this.lastID}, (err, row) => {
+//                     res.status(201).json({checkbox: row});
+//                 });
+//             }
+//         });
+//     }
+// }); 
+
+app.post('/years/:year/month/checkbox', (req,res,next) => {// ***try to implement adding a get query after posting to return row***
+    const newCheckbox = req.body.checkbox;
+    if(!newCheckbox.skillName) {
+        res.sendStatus(400);
+    } else{
+        db.query(`INSERT INTO checkbox SET ?;`, {
+            skillName: newCheckbox.skillName,
+            weeks_id: newCheckbox.weekID,
+            months_id: newCheckbox.monthID,
+            year: newCheckbox.year,
+            monday: newCheckbox.monday,
+            tuesday: newCheckbox.tuesday,
+            wednesday: newCheckbox.wednesday,
+            thursday: newCheckbox.thursday,
+            friday: newCheckbox.friday,
+            saturday: newCheckbox.saturday,
+            sunday: newCheckbox.sunday
+        }, (err, row) => {
+            if(err){
+                next(err);
+            } else{
+                res.sendStatus(201)
+            }
+        })
+    }
+});
+// checkboxRouter.put('/', (req,res,next) => {
+//     const updatedCheckbox = req.body.checkbox;
+//     console.log(updatedCheckbox);
+//     if(!updatedCheckbox.skillName) {
+//         res.sendStatus(400);
+//     }  else {
+//         db.run(`UPDATE Checkbox SET 
+//             skillName = $skillName,
+//             monday = $monday,
+//             tuesday = $tuesday,
+//             wednesday = $wednesday,
+//             thursday = $thursday,
+//             friday = $friday, 
+//             saturday = $saturday,
+//             sunday = $sunday
+//             WHERE id = $id;`, {
+//                 $skillName: updatedCheckbox.skillName,
+//                 $monday: updatedCheckbox.monday,
+//                 $tuesday: updatedCheckbox.tuesday,
+//                 $wednesday: updatedCheckbox.wednesday,
+//                 $thursday: updatedCheckbox.thursday,
+//                 $friday: updatedCheckbox.friday,
+//                 $saturday: updatedCheckbox.saturday,
+//                 $sunday: updatedCheckbox.sunday,
+//                 $id: updatedCheckbox.id
+//             }, (err) => {
+//                 if(err) {
+//                     next(err);
+//                 } else{
+//                     db.get(`SELECT * FROM Checkbox WHERE id = $id;`, {$id: updatedCheckbox.id}, (err, row) => {
+//                         res.status(200).json({checkbox: row});
+//                     });
+//                 }
+//             });
+//     }
+// });
+app.put('/year/:year/month/checkbox', (req,res,next) => {
+    const updatedCheckbox = req.body.checkbox;
+    if(!updatedCheckbox.skillName){
+        res.sendStatus(400);
+    } else{
+        db.query(`UPDATE checkbox SET ? WHERE id = ${updatedCheckbox.id};`, {
+            id: updatedCheckbox.id,
+            skillName: updatedCheckbox.skillName,
+            monday: updatedCheckbox.monday,
+            tuesday: updatedCheckbox.tuesday,
+            wednesday: updatedCheckbox.wednesday,
+            thursday: updatedCheckbox.thursday,
+            friday: updatedCheckbox.friday,
+            saturday: updatedCheckbox.saturday,
+            sunday: updatedCheckbox.sunday
+        }, (err) => {
+            if(err){
+                next(err);
+            } else{
+                db.query(`SELECT * FROM checkbox WHERE id = ${updatedCheckbox.id};`, (err, row) => {
+                    res.status(200).json({checkbox: row});
+                })
+            }
+        })
+    }
+});
+// checkboxRouter.delete('/', (req,res,next) => {
+//     db.run(`DELETE FROM Checkbox WHERE id = $id;`, {$id: req.query.id}, (err) => {
+//         if(err) {
+//             next(err);
+//         }else {
+//             res.sendStatus(200);
+//         }
+//     });
+// });
+app.delete('/years/:year/month/checkbox', (req,res,next) => {
+    db.query(`DELETE FROM checkbox WHERE id = ${req.query.id};`, (err) => {
+        if(err) {
+            next(err);
+        } else{
+            res.sendStatus(200);
+        }
+    })
+});
 
 app.use(errorHandler());
 
