@@ -79,16 +79,6 @@ app.delete('/years', (req,res,next) => {
     })
 });
 
-// app.get(`/years/:year`, (req, res, next) => {
-//     db.query(`SELECT * FROM months WHERE yearFK = $year;`, {$year: req.params.year}, (err, rows) => {
-//         if(err) {
-//             next(err);
-//         } else {
-//             res.status(200).json({months: rows});
-//         }
-//     });
-// });
-
 app.get('/years/:year', (req,res,next) => {
     db.query(`SELECT * FROM months WHERE year = ${req.params.year};`, (err, rows) => {
         if(err){
@@ -160,21 +150,6 @@ app.delete(`/years/:year`, (req,res,next) => {
         }
     })
 });
-
-// weeksRouter.get('/', (req,res,next) => {
-//     const weeks = req.query;
-//     console.log(weeks.monthId);
-//     db.all(`SELECT * FROM Weeks WHERE yearFK = $yearFK AND monthId = $monthId;`, {
-//         $yearFK: weeks.year,
-//         $monthId: weeks.monthId
-//     }, (err, rows) => {
-//         if(err) {
-//             next(err);
-//         } else {
-//             res.status(200).send({weeks: rows});
-//         }
-//     });
-// });
 
 app.get('/years/:year/month', (req,res,next) => {
     db.query(`SELECT * FROM weeks WHERE year = ${req.params.year} AND months_id = ${req.query.monthID};`, (err, rows) => {
@@ -265,15 +240,6 @@ app.delete('/years/:year/month', (req,res,next) => {
 });
 
 //TIMELOGGER
-// tableRouter.get('/', (req,res,next) => {
-//     db.all(`SELECT * FROM TimeLogger WHERE weekId = $id;`, {$id: req.query.weekId}, (err, rows) => {
-//         if(err) {
-//             next(err);
-//         } else {
-//             res.status(200).json({tables: rows});
-//         }
-//     });
-// });
 app.get('/years/:year/month/table', (req,res,next) => {
     db.query(`SELECT * FROM timeLogger WHERE weeks_id = ${req.query.weekID};`, (err,rows) => {
         if(err){
@@ -291,86 +257,6 @@ app.get('/years/:year/month/table', (req,res,next) => {
 //     } else {
 //         db.run(`INSERT INTO TimeLogger (skillName, weekId, monthId, yearFK,
 //             learningMondayHours, learningMondayMinutes, learningTuesdayHours, learningTuesdayMinutes, learningWednesdayHours, 
-//             learningWednesdayMinutes, learningThursdayHours, learningThursdayMinutes, learningFridayHours, learningFridayMinutes, 
-//             learningSaturdayHours, learningSaturdayMinutes, learningSundayHours, learningSundayMinutes, learningGoalHours, 
-//             learningGoalMinutes,
-//             practicingMondayHours, practicingMondayMinutes, practicingTuesdayHours, practicingTuesdayMinutes, practicingWednesdayHours, 
-//             practicingWednesdayMinutes, practicingThursdayHours, practicingThursdayMinutes, practicingFridayHours, practicingFridayMinutes, 
-//             practicingSaturdayHours, practicingSaturdayMinutes, practicingSundayHours, practicingSundayMinutes, practicingGoalHours, 
-//             practicingGoalMinutes,  
-//             performingMondayHours, performingMondayMinutes, performingTuesdayHours, performingTuesdayMinutes, performingWednesdayHours,
-//             performingWednesdayMinutes, performingThursdayHours, performingThursdayMinutes, performingFridayHours, performingFridayMinutes,
-//             performingSaturdayHours, performingSaturdayMinutes, performingSundayHours, performingSundayMinutes, performingGoalHours, 
-//             performingGoalMinutes,
-//             totalGoalHours, totalGoalMinutes)
-//                 VALUES ($skillName, $weekId, $monthId, $yearFK,
-//                     $learningMondayHours, $learningMondayMinutes, $learningTuesdayHours, $learningTuesdayMinutes,$learningWednesdayHours, 
-//                     $learningWednesdayMinutes, $learningThursdayHours, $learningThursdayMinutes, $learningFridayHours, $learningFridayMinutes, 
-//                     $learningSaturdayHours, $learningSaturdayMinutes, $learningSundayHours, $learningSundayMinutes, $learningGoalHours, 
-//                     $learningGoalMinutes,
-//                     $practicingMondayHours, $practicingMondayMinutes, $practicingTuesdayHours, $practicingTuesdayMinutes, $practicingWednesdayHours,
-//                     $practicingWednesdayMinutes, $practicingThursdayHours, $practicingThursdayMinutes, $practicingFridayHours, $practicingFridayMinutes,
-//                     $practicingSaturdayHours, $practicingSaturdayMinutes, $practicingSundayHours, $practicingSundayMinutes, $practicingGoalHours, 
-//                     $practicingGoalMinutes,
-//                     $performingMondayHours, $performingMondayMinutes, $performingTuesdayHours, $performingTuesdayMinutes, $performingWednesdayHours,
-//                     $performingWednesdayMinutes, $performingThursdayHours, $performingThursdayMinutes, $performingFridayHours, $performingFridayMinutes,
-//                     $performingSaturdayHours, $performingSaturdayMinutes, $performingSundayHours, $performingSundayMinutes, $performingGoalHours, 
-//                     $performingGoalMinutes,
-//                     $totalGoalHours, $totalGoalMinutes);`, {
-//                         $skillName: newTable.skillName,                                  //skillname
-//                         $weekId: newTable.weekId,                                        //WeekID
-//                         $monthId: newTable.monthId,                                      //MonthId
-//                         $yearFK: newTable.yearFK,                                        // year foreign key
-//                         $learningMondayHours: newTable.learning.monday.hours,            //this starts learning row of table
-//                         $learningMondayMinutes: newTable.learning.monday.minutes, 
-//                         $learningTuesdayHours: newTable.learning.tuesday.hours, 
-//                         $learningTuesdayMinutes: newTable.learning.tuesday.minutes,
-//                         $learningWednesdayHours: newTable.learning.wednesday.hours, 
-//                         $learningWednesdayMinutes: newTable.learning.wednesday.minutes, 
-//                         $learningThursdayHours: newTable.learning.thursday.hours, 
-//                         $learningThursdayMinutes: newTable.learning.thursday.minutes, 
-//                         $learningFridayHours: newTable.learning.friday.hours, 
-//                         $learningFridayMinutes: newTable.learning.friday.minutes, 
-//                         $learningSaturdayHours: newTable.learning.saturday.hours, 
-//                         $learningSaturdayMinutes: newTable.learning.saturday.minutes,
-//                         $learningSundayHours: newTable.learning.sunday.hours,  
-//                         $learningSundayMinutes: newTable.learning.sunday.minutes, 
-//                         $learningGoalHours: newTable.learning.goal.hours, 
-//                         $learningGoalMinutes: newTable.learning.goal.minutes,
-//                         $practicingMondayHours: newTable.practicing.monday.hours,       //this starts practicing row of table
-//                         $practicingMondayMinutes: newTable.practicing.monday.minutes,
-//                         $practicingTuesdayHours: newTable.practicing.tuesday.hours,
-//                         $practicingTuesdayMinutes: newTable.practicing.tuesday.minutes,
-//                         $practicingWednesdayHours: newTable.practicing.wednesday.hours,
-//                         $practicingWednesdayMinutes: newTable.practicing.wednesday.minutes,
-//                         $practicingThursdayHours: newTable.practicing.thursday.hours,
-//                         $practicingThursdayMinutes: newTable.practicing.thursday.minutes,
-//                         $practicingFridayHours: newTable.practicing.friday.hours,
-//                         $practicingFridayMinutes: newTable.practicing.friday.minutes,
-//                         $practicingSaturdayHours: newTable.practicing.saturday.hours,
-//                         $practicingSaturdayMinutes: newTable.practicing.saturday.minutes,
-//                         $practicingSundayHours: newTable.practicing.sunday.hours,
-//                         $practicingSundayMinutes: newTable.practicing.sunday.minutes,
-//                         $practicingGoalHours: newTable.practicing.goal.hours,
-//                         $practicingGoalMinutes: newTable.practicing.goal.minutes,          
-//                         $performingMondayHours: newTable.performing.monday.hours,          //this starts performing row of table
-//                         $performingMondayMinutes: newTable.performing.monday.minutes,
-//                         $performingTuesdayHours: newTable.performing.tuesday.hours,
-//                         $performingTuesdayMinutes: newTable.performing.tuesday.minutes,
-//                         $performingWednesdayHours: newTable.performing.wednesday.hours,
-//                         $performingWednesdayMinutes: newTable.performing.wednesday.minutes,
-//                         $performingThursdayHours: newTable.performing.thursday.hours,
-//                         $performingThursdayMinutes: newTable.performing.thursday.minutes,
-//                         $performingFridayHours: newTable.performing.friday.hours,
-//                         $performingFridayMinutes: newTable.performing.friday.minutes,
-//                         $performingSaturdayHours: newTable.performing.saturday.hours,
-//                         $performingSaturdayMinutes: newTable.performing.saturday.minutes,
-//                         $performingSundayHours: newTable.performing.sunday.hours,
-//                         $performingSundayMinutes: newTable.performing.sunday.minutes,
-//                         $performingGoalHours: newTable.performing.goal.hours,
-//                         $performingGoalMinutes: newTable.performing.goal.minutes,
-//                         $totalGoalHours: newTable.total.goal.hours, 
-//                         $totalGoalMinutes: newTable.total.goal.minutes
 //                     }, function(err) {
 //                         if(err) {
 //                             next(err);
@@ -480,57 +366,6 @@ app.post('/years/:year/month/table', (req,res,next) => {
 //             WHERE id = $id;`, {
 //                 $skillName: updatedTable.skillName,                                  //skillname
 //                 $learningMondayHours: updatedTable.learning.monday.hours,            //this starts learning row of table
-//                 $learningMondayMinutes: updatedTable.learning.monday.minutes, 
-//                 $learningTuesdayHours: updatedTable.learning.tuesday.hours, 
-//                 $learningTuesdayMinutes: updatedTable.learning.tuesday.minutes,
-//                 $learningWednesdayHours: updatedTable.learning.wednesday.hours, 
-//                 $learningWednesdayMinutes: updatedTable.learning.wednesday.minutes, 
-//                 $learningThursdayHours: updatedTable.learning.thursday.hours, 
-//                 $learningThursdayMinutes: updatedTable.learning.thursday.minutes, 
-//                 $learningFridayHours: updatedTable.learning.friday.hours, 
-//                 $learningFridayMinutes: updatedTable.learning.friday.minutes, 
-//                 $learningSaturdayHours: updatedTable.learning.saturday.hours, 
-//                 $learningSaturdayMinutes: updatedTable.learning.saturday.minutes,
-//                 $learningSundayHours: updatedTable.learning.sunday.hours,  
-//                 $learningSundayMinutes: updatedTable.learning.sunday.minutes, 
-//                 $learningActualHours: updatedTable.learning.actual.hours,
-//                 $learningActualMinutes: updatedTable.learning.actual.minutes,
-//                 $learningGoalHours: updatedTable.learning.goal.hours, 
-//                 $learningGoalMinutes: updatedTable.learning.goal.minutes,
-//                 $practicingMondayHours: updatedTable.practicing.monday.hours,       //this starts practicing row of table
-//                 $practicingMondayMinutes: updatedTable.practicing.monday.minutes,
-//                 $practicingTuesdayHours: updatedTable.practicing.tuesday.hours,
-//                 $practicingTuesdayMinutes: updatedTable.practicing.tuesday.minutes,
-//                 $practicingWednesdayHours: updatedTable.practicing.wednesday.hours,
-//                 $practicingWednesdayMinutes: updatedTable.practicing.wednesday.minutes,
-//                 $practicingThursdayHours: updatedTable.practicing.thursday.hours,
-//                 $practicingThursdayMinutes: updatedTable.practicing.thursday.minutes,
-//                 $practicingFridayHours: updatedTable.practicing.friday.hours,
-//                 $practicingFridayMinutes: updatedTable.practicing.friday.minutes,
-//                 $practicingSaturdayHours: updatedTable.practicing.saturday.hours,
-//                 $practicingSaturdayMinutes: updatedTable.practicing.saturday.minutes,
-//                 $practicingSundayHours: updatedTable.practicing.sunday.hours,
-//                 $practicingSundayMinutes: updatedTable.practicing.sunday.minutes,
-//                 $practicingActualHours: updatedTable.practicing.actual.hours,
-//                 $practicingActualMinutes: updatedTable.practicing.actual.minutes,
-//                 $practicingGoalHours: updatedTable.practicing.goal.hours,
-//                 $practicingGoalMinutes: updatedTable.practicing.goal.minutes,          
-//                 $performingMondayHours: updatedTable.performing.monday.hours,          //this starts performing row of table
-//                 $performingMondayMinutes: updatedTable.performing.monday.minutes,
-//                 $performingTuesdayHours: updatedTable.performing.tuesday.hours,
-//                 $performingTuesdayMinutes: updatedTable.performing.tuesday.minutes,
-//                 $performingWednesdayHours: updatedTable.performing.wednesday.hours,
-//                 $performingWednesdayMinutes: updatedTable.performing.wednesday.minutes,
-//                 $performingThursdayHours: updatedTable.performing.thursday.hours,
-//                 $performingThursdayMinutes: updatedTable.performing.thursday.minutes,
-//                 $performingFridayHours: updatedTable.performing.friday.hours,
-//                 $performingFridayMinutes: updatedTable.performing.friday.minutes,
-//                 $performingSaturdayHours: updatedTable.performing.saturday.hours,
-//                 $performingSaturdayMinutes: updatedTable.performing.saturday.minutes,
-//                 $performingSundayHours: updatedTable.performing.sunday.hours,
-//                 $performingSundayMinutes: updatedTable.performing.sunday.minutes,
-//                 $performingActualHours: updatedTable.performing.actual.hours,
-//                 $performingActualMinutes: updatedTable.performing.actual.minutes,
 //                 $performingGoalHours: updatedTable.performing.goal.hours,
 //                 $performingGoalMinutes: updatedTable.performing.goal.minutes,
 //                 $totalActualHours: updatedTable.total.actual.hours,
@@ -645,16 +480,6 @@ app.delete('/years/:year/month/table', (req,res,next) => {
 });
 
 //CHECKBOXES
-// app.get('/unbookedLoads/:year/:month', (req,res) => {
-//     db.query(`SELECT * FROM Loads WHERE booked = false AND delDate LIKE '${req.params.month}____${req.params.year}' 
-//     ORDER BY puDate DESC;`, (err, rows) => {
-//         if(err){
-//             throw err;
-//         } else {
-//             res.json({loads: rows});
-//         }
-//     });
-// });
 app.get('/years/:year/month/checkbox', (req,res,next) => {
     db.query(`SELECT * FROM checkbox WHERE weeks_id = ${req.query.weekID};`, (err,rows) => {
         if(err){
@@ -802,15 +627,6 @@ app.delete('/years/:year/month/checkbox', (req,res,next) => {
 });
 
 //TEXTBOXES
-// subjectiveRouter.get('/', (req,res,next) => {
-//     db.all(`SELECT * FROM Subjective WHERE weekId = $id;`, {$id: req.query.weekId}, (err, rows) => {
-//         if(err) {
-//             next(err);
-//         } else{
-//             res.status(200).json({textboxes: rows});
-//         }
-//     });
-// });
 app.get('/years/:year/month/textboxes', (req,res,next) => {
     db.query(`SELECT * FROM textbox WHERE weeks_id = ${req.query.weekID};`, (err, rows) => {
         if(err){
@@ -905,6 +721,74 @@ app.put('/years/:year/month/textbox', (req,res,next) => {
 app.delete('/years/:year/month/textbox', (req,res,next) => {
     db.query(`DELETE FROM textbox WHERE id = ${req.query.id};`, err => {
         if(err) {
+            next(err);
+        } else{
+            res.sendStatus(200);
+        }
+    })
+});
+
+//MONTH REVIEW
+app.get('/years/:year/month/monthSummary/table/:monthID', (req,res,next) => {
+    db.query(`SELECT skillName,
+        SUM(learningActualHours) AS learningActualHours,  SUM(learningActualMinutes) AS learningActualMinutes, SUM(practicingActualHours) AS practicingActualHours, 
+        SUM(practicingActualMinutes) AS practicingActualMinutes, SUM(performingActualHours) AS performingActualHours, SUM(performingActualMinutes) AS performingActualMinutes,
+        SUM(totalActualHours) AS totalActualHours, SUM(totalActualMinutes) AS totalActualMinutes
+        FROM timeLogger WHERE months_id = ${req.params.monthID}
+        GROUP BY skillName;`, (err, rows) => {
+            if(err){
+                next(err);
+            } else{
+                res.status(200).json({tables: rows});
+            }
+        })
+});
+
+app.get('/years/:year/month/monthSummary/checkbox/:monthID', (req,res,next) => {
+    db.query(`SELECT skillName,
+    SUM(monday) AS mondayTotal, SUM(tuesday) AS tuesdayTotal, SUM(wednesday) AS wednesdayTotal, SUM(thursday) AS thursdayTotal, 
+    SUM(friday) AS fridayTotal, SUM(saturday) AS saturdayTotal, SUM(sunday) AS sundayTotal 
+    FROM checkbox WHERE months_id = ${req.params.monthID}
+    GROUP BY skillName;`, (err, rows) => {
+        if(err) {
+            next(err);
+        } else{
+            res.status(200).json({checkboxes: rows});
+        }
+    })
+});
+
+app.get('/years/:year/month/monthSummary/textbox/:monthID', (req,res,next) => {
+    db.query(`SELECT * FROM textbox WHERE months_id = ${req.params.monthID} AND skillName = "Month Review";`, (err, row) => {
+        if(err){
+            next(err);
+        } else{
+            res.status(200).json({textbox: row});
+        }
+    })
+});
+
+app.post('/years/:year/month/monthSummary/textbox', (req,res,next) => {
+    const newTextbox = req.body.textbox;
+    db.query(`INSERT INTO textbox SET ?;`, {
+        skillName: "Month Review",
+        months_id: newTextbox.monthID,
+        year: newTextbox.year,
+        text: newTextbox.text
+    }, (err, row) => {
+        if(err) {
+            next(err);
+        } else{
+            res.sendStatus(201);
+        }
+    })
+});
+
+app.put('/years/:year/month/monthSummary/textbox', (req,res,next) => {
+    db.query(`UPDATE textbox SET ? WHERE id = ${req.body.textbox.id};`, {
+        text: req.body.textbox.text,
+    }, err =>{
+        if(err){
             next(err);
         } else{
             res.sendStatus(200);
