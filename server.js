@@ -44,32 +44,13 @@ app.post('/years', (req,res,next) => { /* Can i add more than one year at a time
             if(err){
                 throw err;
             } else{
-                console.log(row);
                 res.status(201).json({year: newYear});
             }
         })
     }
 });
 
-// app.delete('/years', (req,res,next) => {
-//     db.query(`SELECT * FROM months WHERE yearID = $yearFK;`, {$yearFK: req.query.year}, (err,rows) => {
-//         if(err){
-//             next(err);
-//         } else if(rows.length){
-//             res.sendStatus(400);
-//         } else{
-//             db.query(`DELETE FROM years WHERE year = $year;`, {$year: req.query.year}, (err) => {
-//                 if(err) {
-//                     next(err);
-//                 } else {
-//                     res.sendStatus(204);
-//                 }
-//             });
-//         }
-//     });
-// });
-
-app.delete('/years', (req,res,next) => {
+app.delete('/years', (req,res,next) => { //add delete check in frontend
     db.query(`DELETE FROM years WHERE year = ${req.query.year};`, (err) => {
         if(err) {
             next(err);
@@ -89,25 +70,6 @@ app.get('/years/:year', (req,res,next) => {
     });
 });
 
-// app.post('/years/:year', (req,res,next) => { 
-//     const newMonth = req.query.month
-//     db.query(`INSERT INTO months (month, yearFK) VALUES ($month, $yearFK);`, {
-//         $month: newMonth,
-//         $yearFK: req.params.year
-//     }, function(err) {
-//         if(err) {
-//             next(err);
-//         } else {
-//             db.get(`SELECT * FROM months WHERE id = $id;`, {$id: this.lastID}, (err, row) => {
-//                 if(err) {
-//                     next(err);
-//                 } else {
-//                     res.status(201).json({month: row});
-//                 }
-//             });
-//         }
-//     });
-// });
 
 app.post('/years/:year', (req,res,next) => {
     db.query(`INSERT INTO months SET ?;`, {
@@ -161,27 +123,6 @@ app.get('/years/:year/month', (req,res,next) => {
     })
 });
 
-// weeksRouter.post('/', (req,res,next) => {
-//     const newWeek = req.query;
-//     db.run(`INSERT INTO Weeks (week, yearFK, monthId)
-//         VALUES ($week, $yearFK, $monthId);`, {
-//             $week: newWeek.week,
-//             $yearFK: newWeek.yearFK,
-//             $monthId: newWeek.monthId
-//         }, function(err) {
-//             if(err) {
-//                 next(err);
-//             } else {
-//                 db.get(`SELECT * FROM Weeks WHERE id = $id;`, {$id: this.lastID}, (err, row) => {
-//                     if(err) {
-//                         next(err);
-//                     } else{
-//                         res.status(201).json({week: row});
-//                     }
-//                 });
-//             }
-//         });
-// });
 
 app.post('/years/:year/month', (req,res,next) => {
     const newWeek = req.body.week;
@@ -250,24 +191,6 @@ app.get('/years/:year/month/table', (req,res,next) => {
     })
 });
 
-// tableRouter.post('/', (req,res,next) => {
-//     const newTable = req.body.table;
-//     if(!newTable.skillName || !newTable.weekId) {
-//         res.sendStatus(400);
-//     } else {
-//         db.run(`INSERT INTO TimeLogger (skillName, weekId, monthId, yearFK,
-//             learningMondayHours, learningMondayMinutes, learningTuesdayHours, learningTuesdayMinutes, learningWednesdayHours, 
-//                     }, function(err) {
-//                         if(err) {
-//                             next(err);
-//                         } else {
-//                             db.get(`SELECT * FROM TimeLogger WHERE id = $id;`, {$id: this.lastID}, (err,row) => {
-//                                 res.status(201).json({table: row})
-//                             });
-//                         }
-//                     });
-//     }
-// });
 app.post('/years/:year/month/table', (req,res,next) => {
     const newTable = req.body.table;
     if(!newTable.skillName || !newTable.weekID) {
@@ -337,53 +260,7 @@ app.post('/years/:year/month/table', (req,res,next) => {
         })
     }
 });
-// tableRouter.put('/', (req,res,next) => {
-//     const updatedTable = req.body.table;
-//     if(!updatedTable.total.goal.hours || !updatedTable.skillName) {
-//         res.sendStatus(400);
-//     } else {
-//         db.run(`UPDATE TimeLogger SET
-//             skillName = $skillName,
-//             learningMondayHours =$learningMondayHours, learningMondayMinutes =$learningMondayMinutes, learningTuesdayHours =$learningTuesdayHours, 
-//             learningTuesdayMinutes =$learningTuesdayMinutes, learningWednesdayHours =$learningWednesdayHours, learningWednesdayMinutes =$learningWednesdayMinutes, 
-//             learningThursdayHours =$learningThursdayHours, learningThursdayMinutes =$learningThursdayMinutes, learningFridayHours =$learningFridayHours, 
-//             learningFridayMinutes =$learningFridayMinutes, learningSaturdayHours =$learningSaturdayHours, learningSaturdayMinutes =$learningSaturdayMinutes, 
-//             learningSundayHours =$learningSundayHours, learningSundayMinutes =$learningSundayMinutes, learningActualHours =$learningActualHours, learningActualMinutes = $learningActualMinutes,
-//             learningGoalHours =$learningGoalHours, learningGoalMinutes =$learningGoalMinutes,
-//             practicingMondayHours =$practicingMondayHours, practicingMondayMinutes =$practicingMondayMinutes, practicingTuesdayHours =$practicingTuesdayHours, 
-//             practicingTuesdayMinutes =$practicingTuesdayMinutes, practicingWednesdayHours =$practicingWednesdayHours, practicingWednesdayMinutes =$practicingWednesdayMinutes, 
-//             practicingThursdayHours =$practicingThursdayHours, practicingThursdayMinutes =$practicingThursdayMinutes, practicingFridayHours =$practicingFridayHours, 
-//             practicingFridayMinutes =$practicingFridayMinutes, practicingSaturdayHours =$practicingSaturdayHours, practicingSaturdayMinutes =$practicingSaturdayMinutes, 
-//             practicingSundayHours =$practicingSundayHours, practicingSundayMinutes =$practicingSundayMinutes, practicingActualHours =$practicingActualHours, practicingActualMinutes =$practicingActualMinutes, 
-//             practicingGoalHours =$practicingGoalHours, practicingGoalMinutes =$practicingGoalMinutes,  
-//             performingMondayHours =$performingMondayHours, performingMondayMinutes =$performingMondayMinutes, performingTuesdayHours =$performingTuesdayHours, 
-//             performingTuesdayMinutes =$performingTuesdayMinutes, performingWednesdayHours =$performingWednesdayHours, performingWednesdayMinutes =$performingWednesdayMinutes, 
-//             performingThursdayHours =$performingThursdayHours, performingThursdayMinutes =$performingThursdayMinutes, performingFridayHours =$performingFridayHours, 
-//             performingFridayMinutes =$performingFridayMinutes, performingSaturdayHours =$performingSaturdayHours, performingSaturdayMinutes =$performingSaturdayMinutes, 
-//             performingSundayHours =$performingSundayHours, performingSundayMinutes =$performingSundayMinutes, performingActualHours =$performingActualHours, performingActualMinutes =$performingActualMinutes,
-//             performingGoalHours =$performingGoalHours, performingGoalMinutes =$performingGoalMinutes,
-//             totalActualHours =$totalActualHours, totalActualMinutes =$totalActualMinutes, totalGoalHours =$totalGoalHours, totalGoalMinutes =$totalGoalMinutes
-//             WHERE id = $id;`, {
-//                 $skillName: updatedTable.skillName,                                  //skillname
-//                 $learningMondayHours: updatedTable.learning.monday.hours,            //this starts learning row of table
-//                 $performingGoalHours: updatedTable.performing.goal.hours,
-//                 $performingGoalMinutes: updatedTable.performing.goal.minutes,
-//                 $totalActualHours: updatedTable.total.actual.hours,
-//                 $totalActualMinutes: updatedTable.total.actual.minutes,
-//                 $totalGoalHours: updatedTable.total.goal.hours, 
-//                 $totalGoalMinutes: updatedTable.total.goal.minutes,
-//                 $id: updatedTable.id
-//             }, (err) => {
-//                 if(err) {
-//                     next(err);
-//                 } else {                            ***This part is different. Maybe add a get request to return post requests?***
-//                     db.get(`SELECT * FROM TimeLogger WHERE id = $id;`, {$id: updatedTable.id}, (err, row) => {
-//                         res.status(200).json({table: row});
-//                     });
-//                 }
-//             });
-//     }
-// });
+
 app.put('/years/:year/month/table', (req,res,next) => {
     const updatedTable = req.body.table;
     if(!updatedTable.total.goal.hours || !updatedTable.skillName) {
@@ -460,15 +337,7 @@ app.put('/years/:year/month/table', (req,res,next) => {
     }
 });
 
-// tableRouter.delete('/', (req,res,next) => {
-//     db.run(`DELETE FROM TimeLogger WHERE id = $id;`, {$id: req.query.id}, (err) => {
-//         if(err) {
-//             next(err);
-//         } else {
-//             res.sendStatus(200)
-//         }
-//     });
-// });
+
 app.delete('/years/:year/month/table', (req,res,next) => {
     db.query(`DELETE FROM timeLogger WHERE id = ${req.query.id};`, (err) => {
         if(err) {
@@ -489,35 +358,6 @@ app.get('/years/:year/month/checkbox', (req,res,next) => {
         }
     })
 });
-// checkboxRouter.post('/', (req,res,next) => {
-//     const newCheckbox = req.body.checkbox
-//     if(!newCheckbox.skillName) {
-//         res.sendStatus(400);
-//     } else {
-//         db.run(`INSERT INTO Checkbox (skillName, monthId, yearFK, monday, tuesday, wednesday, thursday, friday, saturday, sunday, weekId)
-//         VALUES ($skillName, $monthId, $yearFK, $monday, $tuesday, $wednesday, $thursday, $friday, $saturday, $sunday, $weekId);`, {
-//             $skillName: newCheckbox.skillName,
-//             $monthId: newCheckbox.monthId,
-//             $yearFK: newCheckbox.yearFK,
-//             $monday: newCheckbox.monday,
-//             $tuesday: newCheckbox.tuesday,
-//             $wednesday: newCheckbox.wednesday,
-//             $thursday: newCheckbox.thursday,
-//             $friday: newCheckbox.friday,
-//             $saturday: newCheckbox.saturday,
-//             $sunday: newCheckbox.sunday,
-//             $weekId: newCheckbox.weekId
-//         }, function(err) {
-//             if(err) {
-//                 next(err);
-//             } else {
-//                 db.get(`SELECT * FROM Checkbox WHERE id = $id;`, {$id: this.lastID}, (err, row) => {
-//                     res.status(201).json({checkbox: row});
-//                 });
-//             }
-//         });
-//     }
-// }); 
 
 app.post('/years/:year/month/checkbox', (req,res,next) => {// ***try to implement adding a get query after posting to return row***
     const newCheckbox = req.body.checkbox;
@@ -545,42 +385,7 @@ app.post('/years/:year/month/checkbox', (req,res,next) => {// ***try to implemen
         })
     }
 });
-// checkboxRouter.put('/', (req,res,next) => {
-//     const updatedCheckbox = req.body.checkbox;
-//     console.log(updatedCheckbox);
-//     if(!updatedCheckbox.skillName) {
-//         res.sendStatus(400);
-//     }  else {
-//         db.run(`UPDATE Checkbox SET 
-//             skillName = $skillName,
-//             monday = $monday,
-//             tuesday = $tuesday,
-//             wednesday = $wednesday,
-//             thursday = $thursday,
-//             friday = $friday, 
-//             saturday = $saturday,
-//             sunday = $sunday
-//             WHERE id = $id;`, {
-//                 $skillName: updatedCheckbox.skillName,
-//                 $monday: updatedCheckbox.monday,
-//                 $tuesday: updatedCheckbox.tuesday,
-//                 $wednesday: updatedCheckbox.wednesday,
-//                 $thursday: updatedCheckbox.thursday,
-//                 $friday: updatedCheckbox.friday,
-//                 $saturday: updatedCheckbox.saturday,
-//                 $sunday: updatedCheckbox.sunday,
-//                 $id: updatedCheckbox.id
-//             }, (err) => {
-//                 if(err) {
-//                     next(err);
-//                 } else{
-//                     db.get(`SELECT * FROM Checkbox WHERE id = $id;`, {$id: updatedCheckbox.id}, (err, row) => {
-//                         res.status(200).json({checkbox: row});
-//                     });
-//                 }
-//             });
-//     }
-// });
+
 app.put('/year/:year/month/checkbox', (req,res,next) => {
     const updatedCheckbox = req.body.checkbox;
     if(!updatedCheckbox.skillName){
@@ -607,15 +412,7 @@ app.put('/year/:year/month/checkbox', (req,res,next) => {
         })
     }
 });
-// checkboxRouter.delete('/', (req,res,next) => {
-//     db.run(`DELETE FROM Checkbox WHERE id = $id;`, {$id: req.query.id}, (err) => {
-//         if(err) {
-//             next(err);
-//         }else {
-//             res.sendStatus(200);
-//         }
-//     });
-// });
+
 app.delete('/years/:year/month/checkbox', (req,res,next) => {
     db.query(`DELETE FROM checkbox WHERE id = ${req.query.id};`, (err) => {
         if(err) {
@@ -636,27 +433,7 @@ app.get('/years/:year/month/textboxes', (req,res,next) => {
         }
     })
 });
-// subjectiveRouter.post('/', (req,res,next) => {
-//     const newTextbox = req.body.textbox;
-//     if(!newTextbox.skillName){
-//         res.sendStatus(400);
-//     } else {
-//         db.run(`INSERT INTO Subjective (text, skillName, weekId)
-//             VALUES ($text, $skillName, $weekId);`, {
-//                 $text: newTextbox.text, 
-//                 $skillName: newTextbox.skillName,
-//                 $weekId: newTextbox.weekId
-//             }, function(err){
-//                 if(err) {
-//                     next(err);
-//                 } else{
-//                     db.get(`SELECT * FROM Subjective WHERE id = $id;`, {$id: this.lastID}, (err, row) => {
-//                         res.status(201).json({textbox: row});
-//                     });
-//                 }
-//             });
-//     }
-// });
+
 app.post('/years/:year/month/textbox', (req,res,next) => {
     const newTextbox = req.body.textbox;
     if(!newTextbox.skillName){
@@ -677,29 +454,7 @@ app.post('/years/:year/month/textbox', (req,res,next) => {
         })
     }
 });
-// subjectiveRouter.put('/', (req,res,next) => {
-//     const updatedTextbox = req.body.textbox;
-//     if(!updatedTextbox.skillName) {
-//         res.sendStatus(400);
-//     } else{
-//         db.run(`UPDATE Subjective SET 
-//             skillName = $skillName,
-//             text = $text
-//             WHERE id = $id;`, {
-//                 $skillName: updatedTextbox.skillName,
-//                 $text: updatedTextbox.text,
-//                 $id: updatedTextbox.id
-//             }, (err) => {
-//                 if(err){
-//                     next(err);
-//                 } else{
-//                     db.get(`SELECT * FROM Subjective WHERE id = $id;`, {$id: updatedTextbox.id}, (err, row) => {
-//                         res.status(200).json({textbox: row});
-//                     });
-//                 }
-//             });
-//     }
-// });
+
 app.put('/years/:year/month/textbox', (req,res,next) => {
     const updatedTextbox = req.body.textbox;
     if(!updatedTextbox.skillName){
@@ -785,6 +540,73 @@ app.post('/years/:year/month/monthSummary/textbox', (req,res,next) => {
 });
 
 app.put('/years/:year/month/monthSummary/textbox', (req,res,next) => {
+    db.query(`UPDATE textbox SET ? WHERE id = ${req.body.textbox.id};`, {
+        text: req.body.textbox.text,
+    }, err =>{
+        if(err){
+            next(err);
+        } else{
+            res.sendStatus(200);
+        }
+    })
+});
+
+//YEAR REVIEW
+app.get('/years/:year/yearSummary/table', (req,res,next) => {
+    db.query(`SELECT skillName,
+        SUM(learningActualHours) AS learningActualHours,  SUM(learningActualMinutes) AS learningActualMinutes, SUM(practicingActualHours) AS practicingActualHours, 
+        SUM(practicingActualMinutes) AS practicingActualMinutes, SUM(performingActualHours) AS performingActualHours, SUM(performingActualMinutes) AS performingActualMinutes,
+        SUM(totalActualHours) AS totalActualHours, SUM(totalActualMinutes) AS totalActualMinutes
+        FROM timeLogger WHERE year = ${req.params.year}
+        GROUP BY skillName;`, (err, rows) => {
+            if(err){
+                next(err);
+            } else{
+                res.status(200).json({hours: rows});
+            }
+        })
+});
+
+app.get('/years/:year/yearSummary/checkbox', (req,res,next) => {
+    db.query(`SELECT skillName,
+    SUM(monday) AS mondayTotal, SUM(tuesday) AS tuesdayTotal, SUM(wednesday) AS wednesdayTotal, SUM(thursday) AS thursdayTotal, 
+    SUM(friday) AS fridayTotal, SUM(saturday) AS saturdayTotal, SUM(sunday) AS sundayTotal 
+    FROM checkbox WHERE year = ${req.params.year}
+    GROUP BY skillName;`, (err, rows) => {
+        if(err) {
+            next(err);
+        } else{
+            res.status(200).json({checkboxCount: rows});
+        }
+    })
+});
+
+app.get('/years/:year/yearSummary/textbox', (req,res,next) => {
+    db.query(`SELECT * FROM textbox WHERE year = ${req.params.year} AND skillName = "Year Review";`, (err, row) => {
+        if(err){
+            next(err);
+        } else{
+            res.status(200).json({textbox: row});
+        }
+    })
+});
+
+app.post('/years/:year/yearSummary/textbox', (req,res,next) => {
+    const newTextbox = req.body.textbox;
+    db.query(`INSERT INTO textbox SET ?;`, {
+        skillName: "Year Review",
+        year: newTextbox.year,
+        text: newTextbox.text
+    }, (err, row) => {
+        if(err) {
+            next(err);
+        } else{
+            res.sendStatus(201);
+        }
+    })
+});
+
+app.put('/years/:year/yearSummary/textbox', (req,res,next) => {
     db.query(`UPDATE textbox SET ? WHERE id = ${req.body.textbox.id};`, {
         text: req.body.textbox.text,
     }, err =>{
