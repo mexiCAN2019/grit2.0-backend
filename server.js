@@ -618,6 +618,72 @@ app.put('/years/:year/yearSummary/textbox', (req,res,next) => {
     })
 });
 
+//TOTAL SUMMARY
+app.get('/totalSummary/table', (req,res,next) => {
+    db.query(`SELECT skillName,
+        SUM(learningActualHours) AS learningActualHours,  SUM(learningActualMinutes) AS learningActualMinutes, SUM(practicingActualHours) AS practicingActualHours, 
+        SUM(practicingActualMinutes) AS practicingActualMinutes, SUM(performingActualHours) AS performingActualHours, SUM(performingActualMinutes) AS performingActualMinutes,
+        SUM(totalActualHours) AS totalActualHours, SUM(totalActualMinutes) AS totalActualMinutes
+        FROM timeLogger
+        GROUP BY skillName;`, (err, rows) => {
+            if(err){
+                next(err);
+            } else{
+                res.status(200).json({hours: rows});
+            }
+        })
+});
+
+app.get('/totalSummary/checkbox', (req,res,next) => {
+    db.query(`SELECT skillName,
+    SUM(monday) AS mondayTotal, SUM(tuesday) AS tuesdayTotal, SUM(wednesday) AS wednesdayTotal, SUM(thursday) AS thursdayTotal, 
+    SUM(friday) AS fridayTotal, SUM(saturday) AS saturdayTotal, SUM(sunday) AS sundayTotal 
+    FROM checkbox
+    GROUP BY skillName;`, (err, rows) => {
+        if(err) {
+            next(err);
+        } else{
+            res.status(200).json({checkboxCount: rows});
+        }
+    })
+});
+
+app.get('/totalSummary/textbox', (req,res,next) => {
+    db.query(`SELECT * FROM textbox AND skillName = "Total Review";`, (err, row) => {
+        if(err){
+            next(err);
+        } else{
+            res.status(200).json({textbox: row});
+        }
+    })
+});
+
+app.post('/totalSummary/textbox', (req,res,next) => {
+    const newTextbox = req.body.textbox;
+    db.query(`INSERT INTO textbox SET ?;`, {
+        skillName: "Year Review",
+        text: newTextbox.text
+    }, (err, row) => {
+        if(err) {
+            next(err);
+        } else{
+            res.sendStatus(201);
+        }
+    })
+});
+
+app.put('/totalSummary/textbox', (req,res,next) => {
+    db.query(`UPDATE textbox SET ? WHERE id = ${req.body.textbox.id};`, {
+        text: req.body.textbox.text,
+    }, err =>{
+        if(err){
+            next(err);
+        } else{
+            res.sendStatus(200);
+        }
+    })
+});
+
 app.use(errorHandler());
 
 app.listen(PORT, () => {
